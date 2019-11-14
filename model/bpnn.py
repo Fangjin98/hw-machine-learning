@@ -116,7 +116,7 @@ class BPNNet:
     def test(self, patterns):
         return self.calc(patterns)
 
-    def train(self, x_train,y_train,iterations=1000, N=0.5, M=0.1,show_error=False):
+    def train(self, x_train,y_train,iterations=3000, N=0.5, M=0.1,show_error=False):
         # N: learning rate
         # M: momentum factor
         for i in range(0,iterations):

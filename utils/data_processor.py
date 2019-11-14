@@ -3,6 +3,8 @@ from utils.constants import labels_dict
 from utils.constants import TEST
 from utils.constants import TRAIN
 from utils.random_num_generator import rand_int
+import string
+import random
 
 cla_num=[1210,384,69,65]
 cur_cla_num=[0,0,0,0]
@@ -19,6 +21,22 @@ def attribute_and_class(dataSet):
     y_test=np.array(dataSet)[:,6:7]
     return x_test.tolist(),y_test.tolist()
 
+def generate_label_data(xtest,ytest):
+    acc=[]
+    unacc=[]
+    good=[]
+    vgood=[]
+    for i,y in enumerate(ytest):
+        if(y=='unacc'):
+            unacc.extend(xtest[i])
+        elif(y=='acc'):
+            acc.extend(xtest[i])
+        elif(y=='good'):
+            good.extend(xtest[i])
+        elif(y=='vgood'):
+            vgood.extend(xtest[i])
+    return unacc,acc,good,vgood
+
 def generate_random_data(dataSet):
     iterate_num=500
     for i in range(iterate_num):
@@ -31,7 +49,10 @@ def generate_random_data(dataSet):
 def split_data(dataSet):
     x_test=[]
     x_train=[]
-    dataSet=generate_random_data(dataSet)
+    # random.seed(200)
+    # random.shuffle(dataSet)
+    #train_count=0
+    #dataSet=generate_random_data(dataSet)
     for data in dataSet:
        label=labels_dict[data[-1]]
        if(test_or_train(label)==TRAIN):
@@ -40,8 +61,8 @@ def split_data(dataSet):
            x_test.append(data)
        cur_cla_num[label]=cur_cla_num[label]+ 1
 
+
     x_test,y_test=attribute_and_class(x_test)
-    #x_train,y_train=attribute_and_class(x_train)
 
     return x_train,x_test,y_test
 
@@ -50,9 +71,10 @@ def split_data_intentionally(dataSet):
     x_train = []
     train_num=0
     data_distribution=[0,0,0,0]
-    dataSet = generate_random_data(dataSet)
+    #dataSet = generate_random_data(dataSet)
     for data in dataSet:
         if(train_num<1728*0.7):
+            #if(labels_dict[data[-1]]=='good' and )
             label = labels_dict[data[-1]]
             data_distribution[label]+=1
             x_train.append(data)
@@ -69,6 +91,18 @@ def load_data(filename):
 
     for data in data_list:
         data=data.strip('\n').split(',')
+        dataSet.append(data)
+
+    return dataSet
+
+def load_res_data(filename):
+    file=open(filename)
+    data_list=file.readlines()
+    dataSet=[]
+
+    for data in data_list:
+        data=data.strip('\n').split(',')
+        data=float(data[0])
         dataSet.append(data)
 
     return dataSet
